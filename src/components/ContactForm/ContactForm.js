@@ -1,19 +1,30 @@
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from 'redux/actions';
+import { getContacts } from 'redux/selectors';
 import { Button, Form, Label } from './ContactForm.styled';
 
-export const ContactForm = ({ onSubmit }) => {
-  const handleSubmitForm = evt => {
-    onSubmit(evt);
+export const ContactForm = () => {
+  const dispatch = useDispatch();
+  const contacts = useSelector(getContacts);
 
-    setTimeout(() => {
-      const { name, number } = evt.target;
-      name.value = '';
-      number.value = '';
-    }, 100);
+  const handleFormSubmit = evt => {
+    evt.preventDefault();
+    const form = evt.currentTarget;
+    const name = form.elements.name.value;
+    const number = form.elements.number.value;
+    const isAlreadyInContacts = contacts.find(
+      contact => contact.name.toLowerCase() === name.toLowerCase()
+    );
+
+    if (isAlreadyInContacts)
+      return alert('This contact is already in your list.');
+
+    dispatch(addContact({ name, number }));
+    form.reset();
   };
 
   return (
-    <Form onSubmit={handleSubmitForm}>
+    <Form onSubmit={handleFormSubmit}>
       <Label>
         Name
         <input
@@ -37,8 +48,4 @@ export const ContactForm = ({ onSubmit }) => {
       <Button type="submit">Add contact</Button>
     </Form>
   );
-};
-
-ContactForm.propTypes = {
-  onSubmit: PropTypes.func,
 };
