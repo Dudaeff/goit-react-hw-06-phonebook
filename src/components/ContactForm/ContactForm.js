@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from 'redux/actions';
+import { addContact } from 'redux/contactsSlice';
 import { getContacts } from 'redux/selectors';
 import { Button, Form, Label } from './ContactForm.styled';
 
@@ -12,12 +12,13 @@ export const ContactForm = () => {
     const form = evt.currentTarget;
     const name = form.elements.name.value;
     const number = form.elements.number.value;
+
     const isAlreadyInContacts = contacts.find(
       contact => contact.name.toLowerCase() === name.toLowerCase()
     );
 
     if (isAlreadyInContacts)
-      return alert('This contact is already in your list.');
+      return alert('This contact is already in your contacts.');
 
     dispatch(addContact({ name, number }));
     form.reset();
